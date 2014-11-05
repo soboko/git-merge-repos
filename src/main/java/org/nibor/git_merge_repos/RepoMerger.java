@@ -52,7 +52,7 @@ public class RepoMerger {
 		mergedRefs.addAll(mergedBranches);
 		mergedRefs.addAll(mergedTags);
 		deleteMergedRefs();
-        renameOriginalRefs();
+		renameOriginalRefs();
 		resetToBranch();
 		return mergedRefs;
 	}
@@ -90,63 +90,63 @@ public class RepoMerger {
 		return mergedRefs;
 	}
 
-    private void renameOriginalRefs() throws IOException {
-        RevWalk revWalk = new RevWalk(repository);
-        try {
-            Collection<Ref> refs = new ArrayList<Ref>();
-            RefDatabase refDatabase = repository.getRefDatabase();
-            Map<String, Ref> originalBranches = refDatabase.getRefs("refs/heads/original/");
+	private void renameOriginalRefs() throws IOException {
+		RevWalk revWalk = new RevWalk(repository);
+		try {
+			Collection<Ref> refs = new ArrayList<Ref>();
+			RefDatabase refDatabase = repository.getRefDatabase();
+			Map<String, Ref> originalBranches = refDatabase.getRefs("refs/heads/original/");
 
-            Map<String, Ref> originalTags = refDatabase.getRefs("refs/tags/original/");
-            refs.addAll(originalBranches.values());
-            refs.addAll(originalTags.values());
-            for (Ref originalRef : refs) {
-                RefRename t = repository.renameRef(originalRef.getName(),
-                        originalRef.getName().replaceAll("original/", "").replaceAll("/v","-"));
-                t.rename();
-            }
-        } finally {
-            revWalk.release();
-        }
-    }
+			Map<String, Ref> originalTags = refDatabase.getRefs("refs/tags/original/");
+			refs.addAll(originalBranches.values());
+			refs.addAll(originalTags.values());
+			for (Ref originalRef : refs) {
+				RefRename t = repository.renameRef(originalRef.getName(),
+						originalRef.getName().replaceAll("original/", "").replaceAll("/v", "-"));
+				t.rename();
+			}
+		} finally {
+			revWalk.release();
+		}
+	}
 
-    private void deleteOriginalRefs() throws IOException {
-        RevWalk revWalk = new RevWalk(repository);
-        try {
-            Collection<Ref> refs = new ArrayList<Ref>();
-            RefDatabase refDatabase = repository.getRefDatabase();
-            Map<String, Ref> originalBranches = refDatabase.getRefs("refs/heads/original/");
-            Map<String, Ref> originalTags = refDatabase.getRefs("refs/tags/original/");
-            refs.addAll(originalBranches.values());
-            refs.addAll(originalTags.values());
-            for (Ref originalRef : refs) {
-                RefUpdate refUpdate = repository.updateRef(originalRef.getName());
-                refUpdate.setForceUpdate(true);
-                refUpdate.delete(revWalk);
-            }
-        } finally {
-            revWalk.release();
-        }
-    }
+	private void deleteOriginalRefs() throws IOException {
+		RevWalk revWalk = new RevWalk(repository);
+		try {
+			Collection<Ref> refs = new ArrayList<Ref>();
+			RefDatabase refDatabase = repository.getRefDatabase();
+			Map<String, Ref> originalBranches = refDatabase.getRefs("refs/heads/original/");
+			Map<String, Ref> originalTags = refDatabase.getRefs("refs/tags/original/");
+			refs.addAll(originalBranches.values());
+			refs.addAll(originalTags.values());
+			for (Ref originalRef : refs) {
+				RefUpdate refUpdate = repository.updateRef(originalRef.getName());
+				refUpdate.setForceUpdate(true);
+				refUpdate.delete(revWalk);
+			}
+		} finally {
+			revWalk.release();
+		}
+	}
 
-    private void deleteMergedRefs() throws IOException {
-        RevWalk revWalk = new RevWalk(repository);
-        try {
-            Collection<Ref> refs = new ArrayList<Ref>();
-            RefDatabase refDatabase = repository.getRefDatabase();
-            Map<String, Ref> originalBranches = refDatabase.getRefs("refs/heads/merged/");
-            Map<String, Ref> originalTags = refDatabase.getRefs("refs/tags/merged/");
-            refs.addAll(originalBranches.values());
-            refs.addAll(originalTags.values());
-            for (Ref originalRef : refs) {
-                RefUpdate refUpdate = repository.updateRef(originalRef.getName());
-                refUpdate.setForceUpdate(true);
-                refUpdate.delete(revWalk);
-            }
-        } finally {
-            revWalk.release();
-        }
-    }
+	private void deleteMergedRefs() throws IOException {
+		RevWalk revWalk = new RevWalk(repository);
+		try {
+			Collection<Ref> refs = new ArrayList<Ref>();
+			RefDatabase refDatabase = repository.getRefDatabase();
+			Map<String, Ref> originalBranches = refDatabase.getRefs("refs/heads/merged/");
+			Map<String, Ref> originalTags = refDatabase.getRefs("refs/tags/merged/");
+			refs.addAll(originalBranches.values());
+			refs.addAll(originalTags.values());
+			for (Ref originalRef : refs) {
+				RefUpdate refUpdate = repository.updateRef(originalRef.getName());
+				refUpdate.setForceUpdate(true);
+				refUpdate.delete(revWalk);
+			}
+		} finally {
+			revWalk.release();
+		}
+	}
 
 	private void resetToBranch() throws IOException, GitAPIException {
 		Ref master = repository.getRef(Constants.R_HEADS + "master");
